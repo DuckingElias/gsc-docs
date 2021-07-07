@@ -43,6 +43,277 @@
                 "operationId": "endpointStatus",
                 "summary": "Endpoint Status"
             }
+        },
+        "/users": {
+            "summary": "All users",
+            "description": "List of all users",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": [
+                                            {
+                                                "id": "3a66cf1e-618e-482e-8be2-22e01e68aca1",
+                                                "username": "test",
+                                                "createdAt": "2021-07-05T20:54:21.358Z",
+                                                "loginAt": "2021-07-05T20:54:21.358Z"
+                                            },
+                                            {
+                                                "id": "0e37b5cf-5d9f-4111-8c0c-e0dd2407e4ab",
+                                                "username": "test2",
+                                                "createdAt": "2021-07-07T21:47:25.238Z",
+                                                "loginAt": "2021-07-07T21:47:25.238Z"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Array of all users\n"
+                    }
+                },
+                "summary": "All users",
+                "description": "Returns all users\n"
+            }
+        },
+        "/users/{id}": {
+            "summary": "Single User",
+            "description": "Information about a single user\n",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                },
+                                "examples": {
+                                    "Example User": {
+                                        "value": {
+                                            "id": "3a66cf1e-618e-482e-8be2-22e01e68aca1",
+                                            "username": "test",
+                                            "createdAt": "2021-07-05T20:54:21.358Z",
+                                            "loginAt": "2021-07-05T20:54:21.358Z"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Single user"
+                    }
+                },
+                "operationId": "singleUser",
+                "summary": "Single User",
+                "description": "Get single user by id"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Example ID": {
+                            "value": "3a66cf1e-618e-482e-8be2-22e01e68aca1"
+                        }
+                    },
+                    "name": "id",
+                    "description": "ID of the wanted user",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/me": {
+            "summary": "Current user",
+            "description": "Returns information about the current user\n",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                },
+                                "examples": {
+                                    "Example User": {
+                                        "value": {
+                                            "id": "3a66cf1e-618e-482e-8be2-22e01e68aca1",
+                                            "username": "test",
+                                            "createdAt": "2021-07-05T20:54:21.358Z",
+                                            "loginAt": "2021-07-05T20:54:21.358Z"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Current user"
+                    }
+                },
+                "security": [
+                    {
+                        "token_security": [
+                        ]
+                    }
+                ],
+                "operationId": "currentUser",
+                "summary": "Current user",
+                "description": "Gets the current user\n"
+            }
+        },
+        "/users/auth": {
+            "summary": "Authenticate",
+            "description": "Authenticate with credentials",
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthenticationCredentials"
+                            },
+                            "examples": {
+                                "Example Credentials": {
+                                    "value": {
+                                        "username": "test",
+                                        "password": "test"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TokenResponse"
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": {
+                                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNhNjZjZjFlLTYxOGUtNDgyZS04YmUyLTIyZTAxZTY4YWNhMSIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyNTY5MTc0NywiZXhwIjoxNjI4MjgzNzQ3fQ.dA3EED4b4wvjyWgjTKw5CSQZdzM2T0tpFnU_WWZKObo",
+                                            "expiresIn": "30d"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Token and expire date"
+                    },
+                    "404": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Example Error": {
+                                        "value": {
+                                            "error": "User does not exists",
+                                            "status": 404
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "User not found"
+                    },
+                    "403": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Example Error": {
+                                        "value": {
+                                            "error": "Wrong password",
+                                            "status": 403
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Wrong password"
+                    }
+                },
+                "operationId": "auth",
+                "summary": "Authenticate"
+            }
+        },
+        "/users/register": {
+            "summary": "Register user",
+            "description": "Creates a new user",
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthenticationCredentials"
+                            },
+                            "examples": {
+                                "Example Credentials": {
+                                    "value": {
+                                        "username": "test",
+                                        "password": "test"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IDResponse"
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": {
+                                            "id": "bdd8de11-524a-4cb5-8a49-4489cf42b24c"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "User created"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "examples": {
+                                    "Example error": {
+                                        "value": {
+                                            "error": "User already exists",
+                                            "status": "409"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "User already exists"
+                    }
+                },
+                "operationId": "register",
+                "summary": "Register user",
+                "description": "Registers a new user with given credentials"
+            }
         }
     },
     "components": {
@@ -64,6 +335,98 @@
                 "example": {
                     "version": 1,
                     "started_on": "Wed, 07 Jul 2021 21:16:47 GMT"
+                }
+            },
+            "User": {
+                "title": "Root Type for User",
+                "description": "User",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "createdAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "loginAt": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "3a66cf1e-618e-482e-8be2-22e01e68aca1",
+                    "username": "test",
+                    "createdAt": "2021-07-05T20:54:21.358Z",
+                    "loginAt": "2021-07-05T20:54:21.358Z"
+                }
+            },
+            "AuthenticationCredentials": {
+                "title": "Root Type for AuthenticationCredentials",
+                "description": "Credentials for authentication",
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "username": "test",
+                    "password": "test"
+                }
+            },
+            "TokenResponse": {
+                "title": "Root Type for TokenResponse",
+                "description": "JWT Token response",
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "expiresIn": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNhNjZjZjFlLTYxOGUtNDgyZS04YmUyLTIyZTAxZTY4YWNhMSIsInVzZXJuYW1lIjoidGVzdCIsImlhdCI6MTYyNTY5MTc0NywiZXhwIjoxNjI4MjgzNzQ3fQ.dA3EED4b4wvjyWgjTKw5CSQZdzM2T0tpFnU_WWZKObo",
+                    "expiresIn": "30d"
+                }
+            },
+            "IDResponse": {
+                "title": "Root Type for IDResponse",
+                "description": "Reponse with created ID",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "bdd8de11-524a-4cb5-8a49-4489cf42b24c"
+                }
+            },
+            "Error": {
+                "title": "Root Type for Error",
+                "description": "Response error",
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "format": "int32",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "error": "User already exists",
+                    "status": 409
                 }
             }
         },
