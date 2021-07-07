@@ -314,6 +314,141 @@
                 "summary": "Register user",
                 "description": "Registers a new user with given credentials"
             }
+        },
+        "/scripts": {
+            "summary": "All scripts",
+            "description": "Endpoint for receiving all scripts",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Script"
+                                    }
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": [
+                                            {
+                                                "id": "94dac699-88af-4698-b819-492f0a86aa74",
+                                                "name": "Test",
+                                                "version": "1.0.0",
+                                                "file": "54b262053524e8df0013752d5abdcd8b",
+                                                "image": "a6fec4f75429be9041949f3efe1bfe61",
+                                                "description": "Test"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "List with all scripts"
+                    }
+                },
+                "operationId": "scripts",
+                "summary": "Get all scripts",
+                "description": "Gets a list of all scripts\n"
+            }
+        },
+        "/scripts/{id}": {
+            "summary": "Single script",
+            "description": "Receives a single script by its ID",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Script"
+                                },
+                                "examples": {
+                                    "Example Script": {
+                                        "value": "    {\r\n        \"id\": \"94dac699-88af-4698-b819-492f0a86aa74\",\r\n        \"name\": \"Test\",\r\n        \"version\": \"1.0.0\",\r\n        \"file\": \"54b262053524e8df0013752d5abdcd8b\",\r\n        \"image\": \"a6fec4f75429be9041949f3efe1bfe61\",\r\n        \"description\": \"Test\"\r\n    }"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "The script with the ID\n"
+                    }
+                },
+                "operationId": "script",
+                "summary": "Single script",
+                "description": "Gets a single script by its ID"
+            },
+            "parameters": [
+                {
+                    "examples": {
+                        "Example ID": {
+                            "value": "94dac699-88af-4698-b819-492f0a86aa74"
+                        }
+                    },
+                    "name": "id",
+                    "description": "ID of the wanted script\n",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/scripts/create": {
+            "summary": "Create script",
+            "description": "Endpoint for creating a new script\n",
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UploadedScript"
+                            },
+                            "examples": {
+                                "Example Request": {
+                                    "value": {
+                                        "name": "some text",
+                                        "version": "some text",
+                                        "file": "some text",
+                                        "image": "some text",
+                                        "description": "some text"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IDResponse"
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": {
+                                            "id": "some text"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "The ID of the created script"
+                    }
+                },
+                "security": [
+                    {
+                        "token_security": [
+                        ]
+                    }
+                ],
+                "operationId": "createScript",
+                "summary": "Create script",
+                "description": "Creates a new script"
+            }
         }
     },
     "components": {
@@ -321,6 +456,10 @@
             "EndpointStatus": {
                 "title": "Root Type for EndpointStatus",
                 "description": "Holds information about the status of the endpoint",
+                "required": [
+                    "started_on",
+                    "version"
+                ],
                 "type": "object",
                 "properties": {
                     "version": {
@@ -340,6 +479,12 @@
             "User": {
                 "title": "Root Type for User",
                 "description": "User",
+                "required": [
+                    "createdAt",
+                    "id",
+                    "loginAt",
+                    "username"
+                ],
                 "type": "object",
                 "properties": {
                     "id": {
@@ -367,9 +512,14 @@
             "AuthenticationCredentials": {
                 "title": "Root Type for AuthenticationCredentials",
                 "description": "Credentials for authentication",
+                "required": [
+                    "password",
+                    "username"
+                ],
                 "type": "object",
                 "properties": {
                     "username": {
+                        "format": "password",
                         "type": "string"
                     },
                     "password": {
@@ -384,6 +534,10 @@
             "TokenResponse": {
                 "title": "Root Type for TokenResponse",
                 "description": "JWT Token response",
+                "required": [
+                    "expiresIn",
+                    "token"
+                ],
                 "type": "object",
                 "properties": {
                     "token": {
@@ -401,6 +555,9 @@
             "IDResponse": {
                 "title": "Root Type for IDResponse",
                 "description": "Reponse with created ID",
+                "required": [
+                    "id"
+                ],
                 "type": "object",
                 "properties": {
                     "id": {
@@ -414,6 +571,9 @@
             "Error": {
                 "title": "Root Type for Error",
                 "description": "Response error",
+                "required": [
+                    "error"
+                ],
                 "type": "object",
                 "properties": {
                     "error": {
@@ -427,6 +587,85 @@
                 "example": {
                     "error": "User already exists",
                     "status": 409
+                }
+            },
+            "Script": {
+                "title": "Root Type for Script",
+                "description": "A Script is a resource uploaded by a user. It contains the name, version, description, the actual file and an image.",
+                "required": [
+                    "description",
+                    "file",
+                    "id",
+                    "image",
+                    "name",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "file": {
+                        "type": "string"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": "94dac699-88af-4698-b819-492f0a86aa74",
+                    "name": "Test",
+                    "version": "1.0.0",
+                    "file": "54b262053524e8df0013752d5abdcd8b",
+                    "image": "a6fec4f75429be9041949f3efe1bfe61",
+                    "description": "Test"
+                }
+            },
+            "UploadedScript": {
+                "title": "Root Type for UploadedScript",
+                "description": "The Data needed for the script",
+                "required": [
+                    "file",
+                    "description",
+                    "image",
+                    "name",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "version": {
+                        "type": "string"
+                    },
+                    "file": {
+                        "format": "binary",
+                        "type": "string"
+                    },
+                    "image": {
+                        "format": "binary",
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "name": "Test",
+                    "version": "1.0.0",
+                    "file": "54b262053524e8df0013752d5abdcd8b",
+                    "image": "a6fec4f75429be9041949f3efe1bfe61",
+                    "description": "Test"
                 }
             }
         },
