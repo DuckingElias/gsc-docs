@@ -1,0 +1,79 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "German Skript Community API",
+        "version": "1"
+    },
+    "servers": [
+        {
+            "url": "https://api.german-skript-community.de",
+            "description": ""
+        }
+    ],
+    "paths": {
+        "/": {
+            "summary": "Endpoint Status",
+            "description": "Retrieves Information about the status of the endpoint",
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EndpointStatus"
+                                },
+                                "examples": {
+                                    "Example Response": {
+                                        "value": {
+                                            "version": 1,
+                                            "started_on": "Wed, 07 Jul 2021 21:16:47 GMT"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Status of the endpoint"
+                    }
+                },
+                "security": [
+                    {
+
+                    }
+                ],
+                "operationId": "endpointStatus",
+                "summary": "Endpoint Status"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EndpointStatus": {
+                "title": "Root Type for EndpointStatus",
+                "description": "Holds information about the status of the endpoint",
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "started_on": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "version": 1,
+                    "started_on": "Wed, 07 Jul 2021 21:16:47 GMT"
+                }
+            }
+        },
+        "securitySchemes": {
+            "token_security": {
+                "type": "apiKey",
+                "description": "Used for authentification with specific routes",
+                "name": "token",
+                "in": "query"
+            }
+        }
+    }
+}
